@@ -267,8 +267,8 @@ export function seedDatabase() {
     { sectionKey: 'conLicor', subsectionId: null, name: 'Limonada Sandía', description: 'Refrescante y dulce', price: null, emoji: '🍉', bgColor: 'bg-pink-100', image: '/img/sabores/sandia.png', active: true, orderIndex: 3 },
 
     // Extras
-    { sectionKey: 'extras', subsectionId: null, name: 'Bolas Explosivas', description: 'Sabores: Maracuyá, Lulo, Cereza', price: '$2.000', emoji: '💥', bgColor: 'bg-purple-100', image: '/img/extras/perlas.png', active: true, orderIndex: 0 },
-    { sectionKey: 'extras', subsectionId: null, name: 'Micheladas Sal/Azúcar', description: 'Sabores: Mango, Fantasy', price: '$1.000', emoji: '🍺', bgColor: 'bg-yellow-100', image: '/img/extras/michelado.png', active: true, orderIndex: 1 },
+    { sectionKey: 'extras', subsectionId: null, name: 'Bolas Explosivas', description: 'Sabores: Maracuyá, Mango Viche', price: '$2.000', emoji: '💥', bgColor: 'bg-purple-100', image: '/img/extras/perlas.png', active: true, orderIndex: 0 },
+    { sectionKey: 'extras', subsectionId: null, name: 'Micheladas Sal/Azúcar', description: 'Sabores: Maracuya, Fresa, Limon', price: '$1.000', emoji: '🍺', bgColor: 'bg-yellow-100', image: '/img/extras/michelado.png', active: true, orderIndex: 1 },
 
     // Toppings
     { sectionKey: 'toppings', subsectionId: null, name: 'Gusanito', description: null, price: '$200', emoji: '🐛', bgColor: 'bg-pink-100', image: '/img/toppings/gusanito.png', active: true, orderIndex: 0 },
