@@ -1,5 +1,44 @@
 import Link from "next/link";
 import Image from "next/image";
+import { dbOperations } from '@/lib/database';
+
+// Database result types
+interface DBSection {
+  id: number;
+  key: string;
+  title: string;
+  icon: string;
+  color: string;
+  active: number;
+}
+
+interface DBSize {
+  id: number;
+  section_key: string;
+  size: string;
+  price: string;
+}
+
+interface DBSubsection {
+  id: number;
+  section_key: string;
+  title: string;
+  order_index: number;
+}
+
+interface DBItem {
+  id: number;
+  section_key: string | null;
+  subsection_id: number | null;
+  name: string;
+  description: string | null;
+  price: string | null;
+  emoji: string;
+  bg_color: string;
+  image: string | null;
+  active: number;
+  order_index: number;
+}
 
 // Type definitions
 interface MenuItem {
@@ -37,348 +76,69 @@ interface MenuData {
   [key: string]: MenuSection;
 }
 
-// Menu data structure
-const menuData: MenuData = {
-  especiales: {
-    title: "Granizados Especiales",
-    icon: "🍹",
-    color: "text-red-600",
-    active: true,
-    subsections: [
-      {
-        title: "Con Licor (16 Oz)",
-        items: [
-          {
-            id: 1,
-            name: "Baileys",
-            description: "Cremoso y delicioso",
-            price: "$22.000",
-            emoji: "🍹",
-            bgColor: "bg-gray-200",
-            image: "/img/sabores/baileys.png",
-            active: true
-          },
-          {
-            id: 2,
-            name: "Piña Colada (Ron)",
-            description: "Tropical y refrescante",
-            price: "$22.000",
-            emoji: "🥥",
-            bgColor: "bg-gray-200",
-            image: "/img/sabores/pina_colada.png",
-            active: true
-          },
-          {
-            id: 3,
-            name: "Mango Viche (Tequila)",
-            description: "Dulce y picante",
-            price: "$22.000",
-            emoji: "🥭",
-            bgColor: "bg-gray-200",
-            image: "/img/sabores/mango_viche.png",
-            active: true
-          },
-          {
-            id: 4,
-            name: "Lulo (Vodka)",
-            description: "Ácido y refrescante",
-            price: "$22.000",
-            emoji: "🍋",
-            bgColor: "bg-gray-200",
-            image: "/img/sabores/lulo.png",
-            active: true
-          }
-        ]
-      },
-      {
-        title: "Sin Licor (16 Oz)",
-        items: [
-          {
-            id: 5,
-            name: "Piña Colada",
-            description: "Tropical y refrescante",
-            price: "$20.000",
-            emoji: "🥥",
-            bgColor: "bg-blue-100",
-            image: "/img/sabores/pina_colada.png",
-            active: true
-          },
-          {
-            id: 6,
-            name: "Mango Viche",
-            description: "Dulce y picante",
-            price: "$20.000",
-            emoji: "🥭",
-            bgColor: "bg-orange-100",
-            image: "/img/sabores/mango_viche.png",
-            active: true
-          },
-          {
-            id: 7,
-            name: "Lulo",
-            description: "Ácido y refrescante",
-            price: "$20.000",
-            emoji: "🍋",
-            bgColor: "bg-yellow-100",
-            image: "/img/sabores/lulo.png",
-            active: true
-          }
-        ]
-      }
-    ]
-  },
-  sinLicor: {
-    title: "Granizados sin Licor",
-    icon: "🧊",
-    color: "text-blue-600",
-    active: true,
-    sizes: [
-      { size: "8 Onz", price: "$8.000" },
-      { size: "12 Onz", price: "$12.000" },
-      { size: "16 Onz", price: "$16.000" },
-      { size: "24 Onz", price: "$20.000" }
-    ],
-    items: [
-      {
-        id: 1,
-        name: "Mora Azul",
-        description: "Dulce y refrescante",
-        emoji: "🫐",
-        bgColor: "bg-blue-100",
-        image: "/img/sabores/mora_azul.png",
-        active: true
-      },
-      {
-        id: 2,
-        name: "Maracuyá Mango",
-        description: "Tropical y ácido",
-        emoji: "🥭",
-        bgColor: "bg-orange-100",
-        image: "/img/sabores/maracu_mango.png",
-        active: true
-      },
-      {
-        id: 3,
-        name: "BombomBum",
-        description: "Dulce y cremoso",
-        emoji: "🍬",
-        bgColor: "bg-red-100",
-        image: "/img/sabores/bombombum.png",
-        active: true
-      },
-      {
-        id: 4,
-        name: "Limonada Sandía",
-        description: "Refrescante y dulce",
-        emoji: "🍉",
-        bgColor: "bg-pink-100",
-        image: "/img/sabores/sandia.png",
-        active: true
-      }
-    ]
-  },
-  conLicor: {
-    title: "Granizados con Licor",
-    icon: "🍸",
-    color: "text-green-600",
-    active: true,
-    sizes: [
-      { size: "8 Onz", price: "$10.000" },
-      { size: "12 Onz", price: "$14.000" },
-      { size: "16 Onz", price: "$18.000" },
-      { size: "24 Onz", price: "$25.000" }
-    ],
-    items: [
-      {
-        id: 1,
-        name: "Mora Azul",
-        description: "Dulce y refrescante",
-        emoji: "🫐",
-        bgColor: "bg-blue-100",
-        image: "/img/sabores/mora_azul.png",
-        active: true
-      },
-      {
-        id: 2,
-        name: "Maracuyá Mango",
-        description: "Tropical y ácido",
-        emoji: "🥭",
-        bgColor: "bg-orange-100",
-        image: "/img/sabores/maracu_mango.png",
-        active: true
-      },
-      {
-        id: 3,
-        name: "BombomBum",
-        description: "Dulce y cremoso",
-        emoji: "🍬",
-        bgColor: "bg-red-100",
-        image: "/img/sabores/bombombum.png",
-        active: true
-      },
-      {
-        id: 4,
-        name: "Limonada Sandía",
-        description: "Refrescante y dulce",
-        emoji: "🍉",
-        bgColor: "bg-pink-100",
-        image: "/img/sabores/sandia.png",
-        active: true
-      }
-    ]
-  },
-  extras: {
-    title: "Extras",
-    icon: "✨",
-    color: "text-purple-600",
-    active: true,
-    items: [
-      {
-        id: 1,
-        name: "Bolas Explosivas",
-        description: "Sabores: Maracuyá, Lulo, Cereza",
-        price: "$2.000",
-        emoji: "💥",
-        bgColor: "bg-purple-100",
-        image: "/img/extras/perlas.png",
-        active: true
-      },
-      {
-        id: 2,
-        name: "Micheladas Sal/Azúcar",
-        description: "Sabores: Mango, Fantasy",
-        price: "$1.000",
-        emoji: "🍺",
-        bgColor: "bg-yellow-100",
-        image: "/img/extras/michelado.png",
-        active: true
-      }
-    ]
-  },
-  toppings: {
-    title: "Toppings",
-    icon: "🍭",
-    color: "text-pink-600",
-    active: true,
-    items: [
-      {
-        id: 1,
-        name: "Gusanito",
-        price: "$200",
-        emoji: "🐛",
-        bgColor: "bg-pink-100",
-        image: "/img/toppings/gusanito.png",
-        active: true
-      },
-      {
-        id: 2,
-        name: "Aro",
-        price: "$200",
-        emoji: "🍩",
-        bgColor: "bg-pink-100",
-        image: "/img/toppings/aro.png",
-        active: true
-      },
-      {
-        id: 3,
-        name: "Chicle Miniatura",
-        price: "$200",
-        emoji: "🍬",
-        bgColor: "bg-pink-100",
-        image: "/img/toppings/mini_chicles.png",
-        active: true
-      },
-      {
-        id: 4,
-        name: "Bombombum",
-        price: "$500",
-        emoji: "💣",
-        bgColor: "bg-pink-100",
-        image: "/img/toppings/bombombum.png",
-        active: true
-      },
-      {
-        id: 5,
-        name: "Cinta",
-        price: "$300",
-        emoji: "🎀",
-        bgColor: "bg-pink-100",
-        image: "/img/toppings/cinta.png",
-        active: true
-      },
-      {
-        id: 6,
-        name: "Tipitin",
-        price: "$300",
-        emoji: "🍭",
-        bgColor: "bg-pink-100",
-        image: "/img/toppings/tipitin.png",
-        active: true
-      }
-    ]
-  },
-  gaseosas: {
-    title: "Gaseosas",
-    icon: "🥤",
-    color: "text-orange-600",
-    active: false,
-    items: [
-      {
-        id: 1,
-        name: "Coca Cola",
-        description: "350ml",
-        price: "$3.500",
-        emoji: "🥤",
-        bgColor: "bg-red-100",
-        active: true
-      },
-      {
-        id: 2,
-        name: "Sprite",
-        description: "350ml",
-        price: "$3.500",
-        emoji: "🥤",
-        bgColor: "bg-green-100",
-        active: true
-      },
-    ]
-  },
-  cervezas: {
-    title: "Cervezas",
-    icon: "🍺",
-    color: "text-yellow-600",
-    active: false,
-    items: [
-      {
-        id: 1,
-        name: "Aguila",
-        description: "330ml",
-        price: "$4.500",
-        emoji: "🍺",
-        bgColor: "bg-yellow-100",
-        active: true
-      },
-      {
-        id: 2,
-        name: "Club Colombia",
-        description: "330ml",
-        price: "$5.000",
-        emoji: "🍺",
-        bgColor: "bg-yellow-100",
-        active: true
-      },
-      {
-        id: 3,
-        name: "Corona",
-        description: "355ml",
-        price: "$6.000",
-        emoji: "🍺",
-        bgColor: "bg-yellow-100",
-        active: false
-      }
-    ]
+// Function to get menu data from database
+async function getMenuData(): Promise<MenuData> {
+  const sections = dbOperations.getAllSections() as DBSection[];
+  const menuData: MenuData = {};
+
+  for (const section of sections) {
+    const sectionData: MenuSection = {
+      title: section.title,
+      icon: section.icon,
+      color: section.color,
+      active: Boolean(section.active),
+    };
+
+    // Get sizes for this section
+    const sizes = dbOperations.getSizes(section.key) as DBSize[];
+    if (sizes.length > 0) {
+      sectionData.sizes = sizes.map(size => ({
+        size: size.size,
+        price: size.price,
+      }));
+    }
+
+    // Get subsections for this section
+    const subsections = dbOperations.getSubsections(section.key) as DBSubsection[];
+    if (subsections.length > 0) {
+      sectionData.subsections = subsections.map(subsection => {
+        const items = dbOperations.getItemsBySubsection(subsection.id) as DBItem[];
+        return {
+          title: subsection.title,
+          items: items.map(item => ({
+            id: item.id,
+            name: item.name,
+            description: item.description || undefined,
+            price: item.price || undefined,
+            emoji: item.emoji,
+            bgColor: item.bg_color,
+            image: item.image || undefined,
+            active: Boolean(item.active),
+          })),
+        };
+      });
+    }
+
+    // Get direct items for this section (not in subsections)
+    const items = dbOperations.getItems(section.key) as DBItem[];
+    if (items.length > 0) {
+      sectionData.items = items.map(item => ({
+        id: item.id,
+        name: item.name,
+        description: item.description || undefined,
+        price: item.price || undefined,
+        emoji: item.emoji,
+        bgColor: item.bg_color,
+        image: item.image || undefined,
+        active: Boolean(item.active),
+      }));
+    }
+
+    menuData[section.key] = sectionData;
   }
-};
+
+  return menuData;
+}
 
 // Component for rendering menu items
 const MenuItem = ({ item }: { item: MenuItem }) => (
@@ -429,9 +189,6 @@ const ToppingItem = ({ item }: { item: MenuItem }) => (
 
 // Component for rendering sections with sizes
 const SectionWithSizes = ({ section }: { section: MenuSection }) => {
-  // Don't render the section if it's inactive
-  if (!section.active) return null;
-  
   if (!section.items) return null;
   
   const activeItems = section.items.filter((item: MenuItem) => item.active);
@@ -473,9 +230,6 @@ const SectionWithSizes = ({ section }: { section: MenuSection }) => {
 
 // Component for rendering sections with subsections
 const SectionWithSubsections = ({ section }: { section: MenuSection }) => {
-  // Don't render the section if it's inactive
-  if (!section.active) return null;
-  
   if (!section.subsections) return null;
 
   const activeSubsections = section.subsections.filter(subsection => 
@@ -517,9 +271,6 @@ const SectionWithSubsections = ({ section }: { section: MenuSection }) => {
 
 // Component for rendering regular sections
 const RegularSection = ({ section }: { section: MenuSection }) => {
-  // Don't render the section if it's inactive
-  if (!section.active) return null;
-  
   if (!section.items) return null;
   
   const activeItems = section.items.filter((item: MenuItem) => item.active);
@@ -550,7 +301,9 @@ const RegularSection = ({ section }: { section: MenuSection }) => {
   );
 };
 
-export default function Menu() {
+export default async function Menu() {
+  const menuData = await getMenuData();
+
   return (
     <div className="font-nunito min-h-screen flex flex-col">
       {/* Header */}
@@ -566,12 +319,14 @@ export default function Menu() {
             />
             <span className="text-xl font-bold text-white">HK Cocteles</span>
           </Link>
-          <Link 
-            href="/" 
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Inicio
-          </Link>
+          <div className="flex gap-3">
+            <Link 
+              href="/" 
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Inicio
+            </Link>
+          </div>
         </div>
       </header>
 
