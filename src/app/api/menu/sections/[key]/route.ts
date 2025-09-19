@@ -4,10 +4,10 @@ import { dbOperations } from '@/lib/database';
 // PUT /api/menu/sections/[key] - Update section
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { key: string } }
+  { params }: { params: Promise<{ key: string }> }
 ) {
   try {
-    const { key } = params;
+    const { key } = await params;
     const body = await request.json();
     const { title, icon, color, active } = body;
 

@@ -1,14 +1,99 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { dbOperations } from '@/lib/database';
+
+// Type definitions for database records
+interface DBSection {
+  id: number;
+  key: string;
+  title: string;
+  icon: string;
+  color: string;
+  active: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface DBSize {
+  id: number;
+  section_key: string;
+  size: string;
+  price: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface DBSubsection {
+  id: number;
+  section_key: string;
+  title: string;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface DBItem {
+  id: number;
+  section_key: string | null;
+  subsection_id: number | null;
+  name: string;
+  description: string | null;
+  price: string | null;
+  emoji: string;
+  bg_color: string;
+  image: string | null;
+  active: number;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Type definitions for API response
+interface MenuItem {
+  id: number;
+  name: string;
+  description: string | null;
+  price: string | null;
+  emoji: string;
+  bgColor: string;
+  image: string | null;
+  active: boolean;
+}
+
+interface Size {
+  id: number;
+  size: string;
+  price: string;
+}
+
+interface Subsection {
+  id: number;
+  title: string;
+  items: MenuItem[];
+}
+
+interface MenuSection {
+  id: number;
+  title: string;
+  icon: string;
+  color: string;
+  sizes?: Size[];
+  items?: MenuItem[];
+  subsections?: Subsection[];
+  active: boolean;
+}
+
+interface MenuData {
+  [key: string]: MenuSection;
+}
 
 // GET /api/menu - Get all menu data
 export async function GET() {
   try {
-    const sections = dbOperations.getAllSections();
-    const menuData: any = {};
+    const sections = dbOperations.getAllSections() as DBSection[];
+    const menuData: MenuData = {};
 
     for (const section of sections) {
-      const sectionData: any = {
+      const sectionData: MenuSection = {
         id: section.id,
         title: section.title,
         icon: section.icon,
@@ -17,7 +102,7 @@ export async function GET() {
       };
 
       // Get sizes for this section
-      const sizes = dbOperations.getSizes(section.key);
+      const sizes = dbOperations.getSizes(section.key) as DBSize[];
       if (sizes.length > 0) {
         sectionData.sizes = sizes.map(size => ({
           id: size.id,
@@ -27,10 +112,10 @@ export async function GET() {
       }
 
       // Get subsections for this section
-      const subsections = dbOperations.getSubsections(section.key);
+      const subsections = dbOperations.getSubsections(section.key) as DBSubsection[];
       if (subsections.length > 0) {
         sectionData.subsections = subsections.map(subsection => {
-          const items = dbOperations.getItemsBySubsection(subsection.id);
+          const items = dbOperations.getItemsBySubsection(subsection.id) as DBItem[];
           return {
             id: subsection.id,
             title: subsection.title,
@@ -49,7 +134,7 @@ export async function GET() {
       }
 
       // Get direct items for this section (not in subsections)
-      const items = dbOperations.getItems(section.key);
+      const items = dbOperations.getItems(section.key) as DBItem[];
       if (items.length > 0) {
         sectionData.items = items.map(item => ({
           id: item.id,

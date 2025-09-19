@@ -1,45 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-// Type definitions for API response
-interface MenuItem {
-  id: number;
-  name: string;
-  description: string | null;
-  price: string | null;
-  emoji: string;
-  bgColor: string;
-  image: string | null;
-  active: boolean;
-}
-
-interface Size {
-  id: number;
-  size: string;
-  price: string;
-}
-
-interface Subsection {
-  id: number;
-  title: string;
-  items: MenuItem[];
-}
-
-interface MenuSection {
-  id: number;
-  title: string;
-  icon: string;
-  color: string;
-  sizes?: Size[];
-  items?: MenuItem[];
-  subsections?: Subsection[];
-  active: boolean;
-}
-
-interface MenuData {
-  [key: string]: MenuSection;
-}
-
 export default function Home() {
   return (
     <div className="font-nunito min-h-screen flex flex-col">

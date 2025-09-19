@@ -4,10 +4,10 @@ import { dbOperations } from '@/lib/database';
 // PUT /api/menu/items/[id] - Update item
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { name, description, price, emoji, bgColor, image, active, orderIndex } = body;
 
@@ -43,10 +43,10 @@ export async function PUT(
 // DELETE /api/menu/items/[id] - Delete item
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const result = dbOperations.deleteItem(parseInt(id));
 

@@ -4,10 +4,10 @@ import { dbOperations } from '@/lib/database';
 // PUT /api/menu/sizes/[id] - Update size
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { size, price } = body;
 
@@ -33,10 +33,10 @@ export async function PUT(
 // DELETE /api/menu/sizes/[id] - Delete size
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const result = dbOperations.deleteSize(parseInt(id));
 
