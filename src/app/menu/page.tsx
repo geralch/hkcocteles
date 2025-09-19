@@ -159,7 +159,7 @@ const menuData: MenuData = {
       },
       {
         id: 3,
-        name: "Bombom Bum",
+        name: "BombomBum",
         description: "Dulce y cremoso",
         emoji: "🍬",
         bgColor: "bg-red-100",
@@ -209,7 +209,7 @@ const menuData: MenuData = {
       },
       {
         id: 3,
-        name: "Bombom Bum",
+        name: "BombomBum",
         description: "Dulce y cremoso",
         emoji: "🍬",
         bgColor: "bg-red-100",
@@ -341,15 +341,6 @@ const menuData: MenuData = {
         bgColor: "bg-green-100",
         active: true
       },
-      {
-        id: 3,
-        name: "Fanta",
-        description: "350ml",
-        price: "$3.500",
-        emoji: "🥤",
-        bgColor: "bg-orange-100",
-        active: false
-      }
     ]
   },
   cervezas: {
