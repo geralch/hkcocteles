@@ -208,7 +208,7 @@ const SectionWithSizes = ({ section }: { section: MenuSection }) => {
         {section.sizes && (
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-4 text-gray-800">Tamaños Disponibles</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
               {section.sizes.map((size: Size, index: number) => (
                 <div key={index} className="text-center p-3 bg-gray-50 rounded-lg">
                   <p className="font-semibold text-gray-800">{size.size}</p>
