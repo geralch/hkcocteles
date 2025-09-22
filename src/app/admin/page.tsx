@@ -520,13 +520,13 @@ export default function AdminPage() {
         )}
 
         {/* Menu Sections */}
-        <div className="space-y-8">
+        <div className="space-y-6">
           {Object.entries(menuData).map(([sectionKey, section]) => (
-            <div key={sectionKey} className="bg-white rounded-lg shadow-lg p-6">
+            <div key={sectionKey} className="bg-white rounded-lg shadow-lg p-4">
               {/* Section Header */}
-              <div className="flex items-center justify-between mb-6">
-                <h2 className={`text-2xl font-black ${section.color} flex items-center gap-3`}>
-                  <span className="text-3xl">{section.icon}</span>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className={`text-xl font-black ${section.color} flex items-center gap-2`}>
+                  <span className="text-2xl">{section.icon}</span>
                   {section.title}
                 </h2>
                 <div className="flex items-center gap-3">
@@ -537,158 +537,189 @@ export default function AdminPage() {
                       onChange={(e) => updateSectionActive(sectionKey, e.target.checked)}
                       className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                     />
-                    <span className="text-sm font-medium text-gray-700">Sección Activa</span>
+                    <span className="text-sm font-medium text-gray-700">Activa</span>
                   </label>
                 </div>
               </div>
 
               {/* Sizes Section */}
               {section.sizes && (
-                <div className="mb-6">
-                  <h3 className="text-lg font-bold mb-4 text-gray-800">Tamaños y Precios</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {section.sizes.map((size, index) => (
-                      <div key={index} className="border border-gray-200 rounded-lg p-4">
-                        <div className="mb-3">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Tamaño
-                          </label>
-                          <input
-                            type="text"
-                            value={size.size}
-                            onChange={(e) => updateSize(sectionKey, index, 'size', e.target.value)}
-                            className="w-full px-3 py-2 border-2 border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Precio
-                          </label>
-                          <input
-                            type="text"
-                            value={size.price}
-                            onChange={(e) => updateSize(sectionKey, index, 'price', e.target.value)}
-                            className="w-full px-3 py-2 border-2 border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {/* Add Size */}
-                  <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input
-                      type="text"
-                      placeholder="Nuevo tamaño"
-                      value={newSizeBySection[sectionKey]?.size || ''}
-                      onChange={(e) => setNewSizeBySection(prev => ({ ...prev, [sectionKey]: { size: e.target.value, price: prev[sectionKey]?.price || '' } }))}
-                      className="px-3 py-2 border-2 border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Precio"
-                      value={newSizeBySection[sectionKey]?.price || ''}
-                      onChange={(e) => setNewSizeBySection(prev => ({ ...prev, [sectionKey]: { size: prev[sectionKey]?.size || '', price: e.target.value } }))}
-                      className="px-3 py-2 border-2 border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
-                    />
-                    <button
-                      onClick={() => addSize(sectionKey)}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                    >
-                      Agregar Tamaño
-                    </button>
+                <div className="mb-4">
+                  <h3 className="text-md font-bold mb-2 text-gray-800">Tamaños y Precios</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-300">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="border border-gray-300 px-3 py-2 text-left text-sm font-medium text-gray-700">Tamaño</th>
+                          <th className="border border-gray-300 px-3 py-2 text-left text-sm font-medium text-gray-700">Precio</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {section.sizes.map((size, index) => (
+                          <tr key={index} className="hover:bg-gray-50">
+                            <td className="border border-gray-300 px-3 py-1">
+                              <input
+                                type="text"
+                                value={size.size}
+                                onChange={(e) => updateSize(sectionKey, index, 'size', e.target.value)}
+                                className="w-full px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                              />
+                            </td>
+                            <td className="border border-gray-300 px-3 py-1">
+                              <input
+                                type="text"
+                                value={size.price}
+                                onChange={(e) => updateSize(sectionKey, index, 'price', e.target.value)}
+                                className="w-full px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                        <tr className="bg-blue-50">
+                          <td className="border border-gray-300 px-3 py-1">
+                            <input
+                              type="text"
+                              placeholder="Nuevo tamaño"
+                              value={newSizeBySection[sectionKey]?.size || ''}
+                              onChange={(e) => setNewSizeBySection(prev => ({ ...prev, [sectionKey]: { size: e.target.value, price: prev[sectionKey]?.price || '' } }))}
+                              className="w-full px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500 text-sm"
+                            />
+                          </td>
+                          <td className="border border-gray-300 px-3 py-1">
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                placeholder="Precio"
+                                value={newSizeBySection[sectionKey]?.price || ''}
+                                onChange={(e) => setNewSizeBySection(prev => ({ ...prev, [sectionKey]: { size: prev[sectionKey]?.size || '', price: e.target.value } }))}
+                                className="flex-1 px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500 text-sm"
+                              />
+                              <button
+                                onClick={() => addSize(sectionKey)}
+                                className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                              >
+                                +
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               )}
 
               {/* Items Section */}
-              <div>
-                <h3 className="text-lg font-bold mb-4 text-gray-800">Items</h3>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {(section.items || []).map((item, index) => (
-                      <div key={item.id} className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center gap-4 mb-4">
-                          <div className={`w-12 h-12 ${item.bgColor} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                            {item.image ? (
-                              <Image
-                                src={item.image}
-                                alt={item.name}
-                                width={48}
-                                height={48}
-                                className="object-contain w-full h-full"
-                              />
-                            ) : (
-                              <span className="text-xl">{item.emoji}</span>
-                            )}
-                          </div>
-                          <div className="flex-1">
+              <div className="mb-4">
+                <h3 className="text-md font-bold mb-2 text-gray-800">Items</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse border border-gray-300">
+                    <thead>
+                      <tr className="bg-gray-50">
+                        <th className="border border-gray-300 px-3 py-2 text-left text-sm font-medium text-gray-700 w-12">Icon</th>
+                        <th className="border border-gray-300 px-3 py-2 text-left text-sm font-medium text-gray-700">Nombre</th>
+                        <th className="border border-gray-300 px-3 py-2 text-left text-sm font-medium text-gray-700">Descripción</th>
+                        <th className="border border-gray-300 px-3 py-2 text-left text-sm font-medium text-gray-700">Precio</th>
+                        <th className="border border-gray-300 px-3 py-2 text-center text-sm font-medium text-gray-700 w-16">Activo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(section.items || []).map((item, index) => (
+                        <tr key={item.id} className="hover:bg-gray-50">
+                          <td className="border border-gray-300 px-2 py-1 text-center">
+                            <div className={`w-8 h-8 ${item.bgColor} rounded flex items-center justify-center mx-auto`}>
+                              {item.image ? (
+                                <Image
+                                  src={item.image}
+                                  alt={item.name}
+                                  width={32}
+                                  height={32}
+                                  className="object-contain w-full h-full"
+                                />
+                              ) : (
+                                <span className="text-sm">{item.emoji}</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="border border-gray-300 px-3 py-1">
                             <input
                               type="text"
                               value={item.name}
                               onChange={(e) => updateItem(sectionKey, null, index, 'name', e.target.value)}
-                              className="w-full text-lg font-black text-gray-800 bg-white border-2 border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded px-2 py-1"
+                              className="w-full px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm font-medium"
                             />
-                          </div>
-                          <label className="flex items-center gap-2">
+                          </td>
+                          <td className="border border-gray-300 px-3 py-1">
+                            <input
+                              type="text"
+                              value={item.description || ''}
+                              onChange={(e) => updateItem(sectionKey, null, index, 'description', e.target.value)}
+                              className="w-full px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                            />
+                          </td>
+                          <td className="border border-gray-300 px-3 py-1">
+                            <input
+                              type="text"
+                              value={item.price || ''}
+                              onChange={(e) => updateItem(sectionKey, null, index, 'price', e.target.value)}
+                              className="w-full px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                            />
+                          </td>
+                          <td className="border border-gray-300 px-3 py-1 text-center">
                             <input
                               type="checkbox"
                               checked={item.active}
                               onChange={(e) => updateItem(sectionKey, null, index, 'active', e.target.checked)}
                               className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                             />
-                            <span className="text-sm font-medium text-gray-700">Activo</span>
-                          </label>
-                        </div>
-                        <div className="space-y-3">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Descripción
-                            </label>
+                          </td>
+                        </tr>
+                      ))}
+                      <tr className="bg-blue-50">
+                        <td className="border border-gray-300 px-2 py-1 text-center">
+                          <div className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center mx-auto">
+                            <span className="text-sm">✨</span>
+                          </div>
+                        </td>
+                        <td className="border border-gray-300 px-3 py-1">
+                          <input
+                            type="text"
+                            placeholder="Nombre del item"
+                            value={newItemBySection[sectionKey]?.name || ''}
+                            onChange={(e) => setNewItemBySection(prev => ({ ...prev, [sectionKey]: { name: e.target.value, price: prev[sectionKey]?.price || '', description: prev[sectionKey]?.description || '' } }))}
+                            className="w-full px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500 text-sm"
+                          />
+                        </td>
+                        <td className="border border-gray-300 px-3 py-1">
+                          <input
+                            type="text"
+                            placeholder="Descripción"
+                            value={newItemBySection[sectionKey]?.description || ''}
+                            onChange={(e) => setNewItemBySection(prev => ({ ...prev, [sectionKey]: { name: prev[sectionKey]?.name || '', price: prev[sectionKey]?.price || '', description: e.target.value } }))}
+                            className="w-full px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500 text-sm"
+                          />
+                        </td>
+                        <td className="border border-gray-300 px-3 py-1">
+                          <div className="flex gap-2">
                             <input
                               type="text"
-                              value={item.description || ''}
-                              onChange={(e) => updateItem(sectionKey, null, index, 'description', e.target.value)}
-                              className="w-full px-3 py-2 border-2 border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                              placeholder="Precio"
+                              value={newItemBySection[sectionKey]?.price || ''}
+                              onChange={(e) => setNewItemBySection(prev => ({ ...prev, [sectionKey]: { name: prev[sectionKey]?.name || '', price: e.target.value, description: prev[sectionKey]?.description || '' } }))}
+                              className="flex-1 px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500 text-sm"
                             />
+                            <button
+                              onClick={() => addItem(sectionKey)}
+                              className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                            >
+                              +
+                            </button>
                           </div>
-                          {item.price && (
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Precio
-                              </label>
-                              <input
-                                type="text"
-                                value={item.price}
-                                onChange={(e) => updateItem(sectionKey, null, index, 'price', e.target.value)}
-                                className="w-full px-3 py-2 border-2 border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                </div>
-                {/* Add Item */}
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <input
-                    type="text"
-                    placeholder="Nombre del item"
-                    value={newItemBySection[sectionKey]?.name || ''}
-                    onChange={(e) => setNewItemBySection(prev => ({ ...prev, [sectionKey]: { name: e.target.value, price: prev[sectionKey]?.price || '', description: prev[sectionKey]?.description || '' } }))}
-                    className="px-3 py-2 border-2 border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Precio (opcional)"
-                    value={newItemBySection[sectionKey]?.price || ''}
-                    onChange={(e) => setNewItemBySection(prev => ({ ...prev, [sectionKey]: { name: prev[sectionKey]?.name || '', price: e.target.value, description: prev[sectionKey]?.description || '' } }))}
-                    className="px-3 py-2 border-2 border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
-                  />
-                  <button
-                    onClick={() => addItem(sectionKey)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                  >
-                    Agregar Item
-                  </button>
+                        </td>
+                        <td className="border border-gray-300 px-3 py-1"></td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
@@ -696,73 +727,75 @@ export default function AdminPage() {
               {section.subsections && (
                 <div>
                   {section.subsections.map((subsection, subsectionIndex) => (
-                    <div key={subsectionIndex} className="mb-6">
-                      <h3 className="text-lg font-bold mb-4 text-gray-800 border-b border-gray-200 pb-2">
+                    <div key={subsectionIndex} className="mb-4">
+                      <h3 className="text-md font-bold mb-2 text-gray-800 border-b border-gray-200 pb-1">
                         {subsection.title}
                       </h3>
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        {subsection.items.map((item, itemIndex) => (
-                          <div key={item.id} className="border border-gray-200 rounded-lg p-4">
-                            <div className="flex items-center gap-4 mb-4">
-                              <div className={`w-12 h-12 ${item.bgColor} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                                {item.image ? (
-                                  <Image
-                                    src={item.image}
-                                    alt={item.name}
-                                    width={48}
-                                    height={48}
-                                    className="object-contain w-full h-full"
-                                  />
-                                ) : (
-                                  <span className="text-xl">{item.emoji}</span>
-                                )}
-                              </div>
-                              <div className="flex-1">
-                                <input
-                                  type="text"
-                                  value={item.name}
-                                  onChange={(e) => updateItem(sectionKey, subsectionIndex, itemIndex, 'name', e.target.value)}
-                                  className="w-full text-lg font-black text-gray-800 bg-white border-2 border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded px-2 py-1"
-                                />
-                              </div>
-                              <label className="flex items-center gap-2">
-                                <input
-                                  type="checkbox"
-                                  checked={item.active}
-                                  onChange={(e) => updateItem(sectionKey, subsectionIndex, itemIndex, 'active', e.target.checked)}
-                                  className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                                />
-                                <span className="text-sm font-medium text-gray-700">Activo</span>
-                              </label>
-                            </div>
-                            <div className="space-y-3">
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Descripción
-                                </label>
-                                <input
-                                  type="text"
-                                  value={item.description || ''}
-                                  onChange={(e) => updateItem(sectionKey, subsectionIndex, itemIndex, 'description', e.target.value)}
-                                  className="w-full px-3 py-2 border-2 border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                                />
-                              </div>
-                              {item.price && (
-                                <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Precio
-                                  </label>
+                      <div className="overflow-x-auto">
+                        <table className="w-full border-collapse border border-gray-300">
+                          <thead>
+                            <tr className="bg-gray-50">
+                              <th className="border border-gray-300 px-3 py-2 text-left text-sm font-medium text-gray-700 w-12">Icon</th>
+                              <th className="border border-gray-300 px-3 py-2 text-left text-sm font-medium text-gray-700">Nombre</th>
+                              <th className="border border-gray-300 px-3 py-2 text-left text-sm font-medium text-gray-700">Descripción</th>
+                              <th className="border border-gray-300 px-3 py-2 text-left text-sm font-medium text-gray-700">Precio</th>
+                              <th className="border border-gray-300 px-3 py-2 text-center text-sm font-medium text-gray-700 w-16">Activo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {subsection.items.map((item, itemIndex) => (
+                              <tr key={item.id} className="hover:bg-gray-50">
+                                <td className="border border-gray-300 px-2 py-1 text-center">
+                                  <div className={`w-8 h-8 ${item.bgColor} rounded flex items-center justify-center mx-auto`}>
+                                    {item.image ? (
+                                      <Image
+                                        src={item.image}
+                                        alt={item.name}
+                                        width={32}
+                                        height={32}
+                                        className="object-contain w-full h-full"
+                                      />
+                                    ) : (
+                                      <span className="text-sm">{item.emoji}</span>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="border border-gray-300 px-3 py-1">
                                   <input
                                     type="text"
-                                    value={item.price}
-                                    onChange={(e) => updateItem(sectionKey, subsectionIndex, itemIndex, 'price', e.target.value)}
-                                    className="w-full px-3 py-2 border-2 border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                                    value={item.name}
+                                    onChange={(e) => updateItem(sectionKey, subsectionIndex, itemIndex, 'name', e.target.value)}
+                                    className="w-full px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm font-medium"
                                   />
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
+                                </td>
+                                <td className="border border-gray-300 px-3 py-1">
+                                  <input
+                                    type="text"
+                                    value={item.description || ''}
+                                    onChange={(e) => updateItem(sectionKey, subsectionIndex, itemIndex, 'description', e.target.value)}
+                                    className="w-full px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                                  />
+                                </td>
+                                <td className="border border-gray-300 px-3 py-1">
+                                  <input
+                                    type="text"
+                                    value={item.price || ''}
+                                    onChange={(e) => updateItem(sectionKey, subsectionIndex, itemIndex, 'price', e.target.value)}
+                                    className="w-full px-2 py-1 border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                                  />
+                                </td>
+                                <td className="border border-gray-300 px-3 py-1 text-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={item.active}
+                                    onChange={(e) => updateItem(sectionKey, subsectionIndex, itemIndex, 'active', e.target.checked)}
+                                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                                  />
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   ))}
