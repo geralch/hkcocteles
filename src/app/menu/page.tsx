@@ -11,6 +11,7 @@ interface GoogleSheetsSection {
   icon: string;
   color: string;
   active: string;
+  orderIndex: string;
 }
 
 interface GoogleSheetsSize {
@@ -71,6 +72,7 @@ interface MenuSection {
   items?: MenuItem[];
   subsections?: Subsection[];
   active: boolean;
+  orderIndex: number;
 }
 
 interface MenuData {
@@ -97,6 +99,7 @@ async function getMenuData(): Promise<MenuData> {
       icon: section.icon,
       color: section.color,
       active: Boolean(section.active),
+      orderIndex: parseInt(section.orderIndex),
     };
 
     // Get sizes for this section
@@ -114,7 +117,6 @@ async function getMenuData(): Promise<MenuData> {
     // Get subsections for this section
     const allSubsections = await importMenuData(SUBSECTIONS) as GoogleSheetsSubsection[];
     const subsections = allSubsections.filter((subsection: GoogleSheetsSubsection) => subsection.sectionKey === section.key);
-    console.log('subsections', subsections);
     
     if (subsections.length > 0) {
       const allItems = await importMenuData(ITEMS) as GoogleSheetsItem[];
@@ -141,7 +143,7 @@ async function getMenuData(): Promise<MenuData> {
 
     // Get direct items for this section (not in subsections)
     const allItems = await importMenuData(ITEMS) as GoogleSheetsItem[];
-    const items = allItems.filter((item: GoogleSheetsItem) => item.category === section.key);
+    const items = allItems.filter((item: GoogleSheetsItem) => item.sectionKey === section.key && !item.subsectionId);
     
     if (items.length > 0) {
       sectionData.items = items.map((item: GoogleSheetsItem) => ({
@@ -325,7 +327,6 @@ const RegularSection = ({ section }: { section: MenuSection }) => {
 
 export default async function Menu() {
   const menuData = await getMenuData();
-  console.log('menuData', menuData);
   return (
     <div className="font-nunito min-h-screen flex flex-col">
       {/* Header */}
@@ -359,23 +360,27 @@ export default async function Menu() {
           <p className="text-gray-300">Deliciosos granizados y bebidas para todos los gustos</p>
         </div>
 
-        {Object.values(menuData).map((section) => (
-          section.sizes && section.items && (
-            <SectionWithSizes key={section.title} section={section} />
-          ) ||
-          section.subsections && section.items && (
-            <SectionWithSubsections key={section.title} section={section} />
-          ) ||
-          section.items && (
-            <RegularSection key={section.title} section={section} />
-          )
-        ))}
-
-        {Object.values(menuData).map((section) => (
-          section.subsections && section.items && (
-            <SectionWithSubsections key={section.title} section={section} />
-          )
-        ))}
+        {Object.values(menuData)
+          .filter(section => section.active) // Only render active sections
+          .sort((a, b) => a.orderIndex - b.orderIndex) // Sort by orderIndex
+          .map((section) => {
+            // Render sections with sizes (like sinLicor, conLicor)
+            if (section.sizes && section.items) {
+              return <SectionWithSizes key={section.title} section={section} />;
+            }
+            
+            // Render sections with subsections (like especiales)
+            if (section.subsections) {
+              return <SectionWithSubsections key={section.title} section={section} />;
+            }
+            
+            // Render regular sections (like extras, toppings, etc.)
+            if (section.items) {
+              return <RegularSection key={section.title} section={section} />;
+            }
+            
+            return null;
+          })}
       </main>
 
       {/* Footer */}
