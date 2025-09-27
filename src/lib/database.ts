@@ -209,6 +209,7 @@ export function seedDatabase() {
     { key: 'toppings', title: 'Toppings', icon: '🍭', color: 'text-pink-600', active: true },
     { key: 'gaseosas', title: 'Gaseosas', icon: '🥤', color: 'text-orange-600', active: false },
     { key: 'cervezas', title: 'Cervezas', icon: '🍺', color: 'text-yellow-600', active: false },
+    { key: 'sodas', title: 'Sodas', icon: '🍷', color: 'text-pink-600', active: true },
   ];
 
   sections.forEach(section => {
@@ -286,6 +287,11 @@ export function seedDatabase() {
     { sectionKey: 'cervezas', subsectionId: null, name: 'Aguila', description: '330ml', price: '$4.500', emoji: '🍺', bgColor: 'bg-yellow-100', image: null, active: true, orderIndex: 0 },
     { sectionKey: 'cervezas', subsectionId: null, name: 'Club Colombia', description: '330ml', price: '$5.000', emoji: '🍺', bgColor: 'bg-yellow-100', image: null, active: true, orderIndex: 1 },
     { sectionKey: 'cervezas', subsectionId: null, name: 'Corona', description: '355ml', price: '$6.000', emoji: '🍺', bgColor: 'bg-yellow-100', image: null, active: false, orderIndex: 2 },
+
+    // Sodas
+    { sectionKey: 'sodas', subsectionId: null, name: 'Maracuyá', description: 'Soda, Sirope Estelar sabor Maracuyá y maracuyá', price: '$16.000', emoji: '🥤', bgColor: 'bg-red-100', image: null, active: true, orderIndex: 0 },	
+    { sectionKey: 'sodas', subsectionId: null, name: 'Frutos del Bosque', description: 'Soda, Sirope Estelar sabor Frutos del Bosque y fresas en trozos', price: '$16.000', emoji: '🥤', bgColor: 'bg-red-100', image: null, active: true, orderIndex: 1 },
+    { sectionKey: 'sodas', subsectionId: null, name: 'Mango Viche', description: 'Soda, Sirope Estelar sabor Mango Viche y mango viche en trozos', price: '$16.000', emoji: '🥤', bgColor: 'bg-red-100', image: null, active: true, orderIndex: 2 },
   ];
 
   items.forEach(item => {
