@@ -1,43 +1,44 @@
 import Link from "next/link";
 import Image from "next/image";
-import { dbOperations } from '@/lib/database';
+import Papa from "papaparse";
+import { GOOGLE_SHEETS_URL } from '@/app/constants/environment';
+import { SECTIONS, SIZES, SUBSECTIONS, ITEMS } from '@/app/constants/database';
 
-// Database result types
-interface DBSection {
-  id: number;
+// Google Sheets data types
+interface GoogleSheetsSection {
   key: string;
   title: string;
   icon: string;
   color: string;
-  active: number;
+  active: string;
 }
 
-interface DBSize {
-  id: number;
-  section_key: string;
+interface GoogleSheetsSize {
+  sectionKey: string;
   size: string;
   price: string;
 }
 
-interface DBSubsection {
-  id: number;
-  section_key: string;
+interface GoogleSheetsSubsection {
+  id: string;
+  sectionKey: string;
   title: string;
-  order_index: number;
+  orderIndex: string;
 }
 
-interface DBItem {
-  id: number;
-  section_key: string | null;
-  subsection_id: number | null;
+interface GoogleSheetsItem {
+  id: string;
+  subsectionId: string;
+  sectionKey: string;
+  category: string;
   name: string;
-  description: string | null;
-  price: string | null;
+  description: string;
+  price: string;
   emoji: string;
-  bg_color: string;
-  image: string | null;
-  active: number;
-  order_index: number;
+  bgColor: string;
+  image: string;
+  active: string;
+  orderIndex: string;
 }
 
 // Type definitions
@@ -76,9 +77,18 @@ interface MenuData {
   [key: string]: MenuSection;
 }
 
+
+const importMenuData = async (table: string) => {
+  const url = `${GOOGLE_SHEETS_URL}${table}`;
+  const res = await fetch(url, { cache: "no-store" }) // no cache so always fresh
+  const text = await res.text()
+  const { data } = Papa.parse(text, { header: true })
+  return data
+}
+
 // Function to get menu data from database
 async function getMenuData(): Promise<MenuData> {
-  const sections = dbOperations.getAllSections() as DBSection[];
+  const sections = await importMenuData(SECTIONS) as GoogleSheetsSection[];
   const menuData: MenuData = {};
 
   for (const section of sections) {
@@ -90,45 +100,57 @@ async function getMenuData(): Promise<MenuData> {
     };
 
     // Get sizes for this section
-    const sizes = dbOperations.getSizes(section.key) as DBSize[];
+    const allSizes = await importMenuData(SIZES) as GoogleSheetsSize[];
+
+    const sizes = allSizes.filter((size: GoogleSheetsSize) => size.sectionKey === section.key);
+
     if (sizes.length > 0) {
-      sectionData.sizes = sizes.map(size => ({
+      sectionData.sizes = sizes.map((size: GoogleSheetsSize) => ({
         size: size.size,
         price: size.price,
       }));
     }
 
     // Get subsections for this section
-    const subsections = dbOperations.getSubsections(section.key) as DBSubsection[];
+    const allSubsections = await importMenuData(SUBSECTIONS) as GoogleSheetsSubsection[];
+    const subsections = allSubsections.filter((subsection: GoogleSheetsSubsection) => subsection.sectionKey === section.key);
+    console.log('subsections', subsections);
+    
     if (subsections.length > 0) {
-      sectionData.subsections = subsections.map(subsection => {
-        const items = dbOperations.getItemsBySubsection(subsection.id) as DBItem[];
+      const allItems = await importMenuData(ITEMS) as GoogleSheetsItem[];
+      
+      sectionData.subsections = await Promise.all(subsections.map(async (subsection: GoogleSheetsSubsection) => {
+        // Filter items by subsection_id
+        const subsectionItems = allItems.filter((item: GoogleSheetsItem) => item.subsectionId == subsection.id);
+        
         return {
           title: subsection.title,
-          items: items.map(item => ({
-            id: item.id,
+          items: subsectionItems.map((item: GoogleSheetsItem) => ({
+            id: parseInt(item.id),
             name: item.name,
             description: item.description || undefined,
             price: item.price || undefined,
             emoji: item.emoji,
-            bgColor: item.bg_color,
+            bgColor: item.bgColor,
             image: item.image || undefined,
             active: Boolean(item.active),
           })),
         };
-      });
+      }));
     }
 
     // Get direct items for this section (not in subsections)
-    const items = dbOperations.getItems(section.key) as DBItem[];
+    const allItems = await importMenuData(ITEMS) as GoogleSheetsItem[];
+    const items = allItems.filter((item: GoogleSheetsItem) => item.category === section.key);
+    
     if (items.length > 0) {
-      sectionData.items = items.map(item => ({
-        id: item.id,
+      sectionData.items = items.map((item: GoogleSheetsItem) => ({
+        id: parseInt(item.id),
         name: item.name,
         description: item.description || undefined,
         price: item.price || undefined,
         emoji: item.emoji,
-        bgColor: item.bg_color,
+        bgColor: item.bgColor,
         image: item.image || undefined,
         active: Boolean(item.active),
       }));
@@ -303,7 +325,7 @@ const RegularSection = ({ section }: { section: MenuSection }) => {
 
 export default async function Menu() {
   const menuData = await getMenuData();
-
+  console.log('menuData', menuData);
   return (
     <div className="font-nunito min-h-screen flex flex-col">
       {/* Header */}
@@ -337,14 +359,23 @@ export default async function Menu() {
           <p className="text-gray-300">Deliciosos granizados y bebidas para todos los gustos</p>
         </div>
 
-        {/* Dynamic Menu Sections */}
-        <SectionWithSizes section={menuData.sinLicor} />
-        <SectionWithSizes section={menuData.conLicor} />
-        <RegularSection section={menuData.extras} />
-        <RegularSection section={menuData.toppings} />
-        <SectionWithSubsections section={menuData.especiales} /> 
-        <RegularSection section={menuData.gaseosas} />
-        <RegularSection section={menuData.cervezas} />
+        {Object.values(menuData).map((section) => (
+          section.sizes && section.items && (
+            <SectionWithSizes key={section.title} section={section} />
+          ) ||
+          section.subsections && section.items && (
+            <SectionWithSubsections key={section.title} section={section} />
+          ) ||
+          section.items && (
+            <RegularSection key={section.title} section={section} />
+          )
+        ))}
+
+        {Object.values(menuData).map((section) => (
+          section.subsections && section.items && (
+            <SectionWithSubsections key={section.title} section={section} />
+          )
+        ))}
       </main>
 
       {/* Footer */}
