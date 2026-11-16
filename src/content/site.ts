@@ -21,6 +21,8 @@ export const site = {
   phone: "3180318210",
   whatsapp: "573180318210",
   whatsappMessage: "¡Hola HK! Quiero hacer un pedido 🍹",
+  // Menu section keys that featured drinks come from, in menu order.
+  featuredSections: ["sinLicor", "conLicor", "especiales"],
   // `schema` uses schema.org openingHours format for Google.
   hours: [
     { days: "Lunes a jueves", time: "3:00 pm – 10:00 pm", schema: "Mo-Th 15:00-22:00" },

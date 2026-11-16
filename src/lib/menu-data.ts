@@ -1,4 +1,22 @@
-// Pure menu shaping: no Next.js or network imports, so it runs under `node --test`.
+// Pure menu shaping: no Next.js or network imports (papaparse is plain parsing),
+// so it runs under `node --test`.
+import Papa from "papaparse";
+
+// Parses one sheet tab. Empty tabs give []; malformed rows are dropped;
+// a response without the tab's key column (e.g. an HTML error page) throws.
+export function parseSheetCsv<T>(text: string, tab: string, keyColumn: string): T[] {
+  if (text.trim() === "") return [];
+  const { data, errors, meta } = Papa.parse<T>(text, { header: true, skipEmptyLines: true });
+  if (!meta.fields?.includes(keyColumn)) {
+    throw new Error(`Google Sheets tab "${tab}" is missing the "${keyColumn}" column`);
+  }
+  const ragged = new Set(
+    errors
+      .filter((error) => error.code === "TooFewFields" || error.code === "TooManyFields")
+      .map((error) => error.row),
+  );
+  return data.filter((_, index) => !ragged.has(index));
+}
 
 // Rows as they come from the Google Sheet CSV tabs (every cell is a string).
 export interface SheetSection {
@@ -129,11 +147,12 @@ export function buildMenu(data: SheetData): MenuSection[] {
 }
 
 // Con licor and sin licor repeat the same flavors, so dedupe by name.
-export function pickFeatured(menu: MenuSection[], limit = 6): FeaturedDrink[] {
+export function pickFeatured(menu: MenuSection[], sectionKeys: readonly string[], limit = 6): FeaturedDrink[] {
   const seen = new Set<string>();
   const featured: FeaturedDrink[] = [];
 
   for (const section of menu) {
+    if (!sectionKeys.includes(section.key)) continue;
     const items = [...section.items, ...section.subsections.flatMap((subsection) => subsection.items)];
     for (const item of items) {
       const name = item.name.trim().toLowerCase();

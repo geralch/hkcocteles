@@ -23,7 +23,7 @@ function galleryPhotos(): string[] {
     .readdirSync(GALLERY_DIR)
     .filter((file) => IMAGE_FILE.test(file))
     .sort()
-    .map((file) => `/img/gallery/${file}`);
+    .map((file) => `/img/gallery/${encodeURIComponent(file)}`);
 }
 
 export default function Gallery() {

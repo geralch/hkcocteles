@@ -33,7 +33,7 @@ const ItemCard = ({ item, compact }: { item: MenuItem; compact: boolean }) => (
         <span className={compact ? "text-xl" : "text-2xl"}>{item.emoji}</span>
       )}
     </div>
-    <div className="flex-1">
+    <div className="flex-1 min-w-0">
       <h4 className="font-display text-lg font-bold leading-tight">{item.name}</h4>
       {!compact && item.description && <p className="text-sm text-ink/70">{item.description}</p>}
       {item.price && <p className="font-display font-bold text-hk-orange-ink">{item.price}</p>}

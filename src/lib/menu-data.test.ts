@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildMenu, parseActive, pickFeatured } from "./menu-data.ts";
+import { buildMenu, parseActive, parseSheetCsv, pickFeatured } from "./menu-data.ts";
 import type { SheetData, SheetItem, SheetSection } from "./menu-data.ts";
 
 const section = (overrides: Partial<SheetSection>): SheetSection => ({
@@ -108,8 +108,56 @@ test("pickFeatured keeps items with images, dedupes by name and respects the lim
       ],
     }),
   );
-  assert.deepEqual(pickFeatured(menu).map((d) => d.name), ["Mora Azul", "Lulo", "Sandía"]);
-  assert.deepEqual(pickFeatured(menu, 2).map((d) => d.id), [1, 3]);
+  const keys = ["sin", "con"];
+  assert.deepEqual(pickFeatured(menu, keys).map((d) => d.name), ["Mora Azul", "Lulo", "Sandía"]);
+  assert.deepEqual(pickFeatured(menu, keys, 2).map((d) => d.id), [1, 3]);
+});
+
+test("pickFeatured skips sections outside sectionKeys", () => {
+  const menu = buildMenu(
+    sheet({
+      sections: [section({ key: "extras" }), section({ key: "sin", orderIndex: "1" })],
+      items: [
+        item({ id: "1", sectionKey: "extras", name: "Topping", image: "/img/t.png" }),
+        item({ id: "2", sectionKey: "sin", name: "Lulo", image: "/img/b.png" }),
+      ],
+    }),
+  );
+  assert.deepEqual(pickFeatured(menu, ["sin"]).map((d) => d.name), ["Lulo"]);
+});
+
+test("buildMenu groups subsection items that only have subsectionId (live Especiales shape)", () => {
+  const menu = buildMenu(
+    sheet({
+      sections: [section({ key: "especiales" })],
+      subsections: [{ id: "10", sectionKey: "especiales", title: "Clásicos", orderIndex: "0" }],
+      items: [item({ id: "1", sectionKey: "", subsectionId: "10", name: "Mojito" })],
+    }),
+  );
+  assert.equal(menu[0].subsections[0].title, "Clásicos");
+  assert.deepEqual(menu[0].subsections[0].items.map((i) => i.name), ["Mojito"]);
+});
+
+test("parseSheetCsv returns typed rows", () => {
+  const rows = parseSheetCsv<{ id: string; name: string }>("id,name\n1,Lulo\n2,Mora\n", "items", "id");
+  assert.deepEqual(rows, [{ id: "1", name: "Lulo" }, { id: "2", name: "Mora" }]);
+});
+
+test("parseSheetCsv returns [] for an empty tab", () => {
+  assert.deepEqual(parseSheetCsv("", "items", "id"), []);
+  assert.deepEqual(parseSheetCsv("  \n", "items", "id"), []);
+});
+
+test("parseSheetCsv drops ragged rows and keeps the rest", () => {
+  const rows = parseSheetCsv<{ id: string; name: string }>("id,name\n1,Lulo\n2\n3,Mora,extra\n4,Sandía\n", "items", "id");
+  assert.deepEqual(rows.map((r) => r.id), ["1", "4"]);
+});
+
+test("parseSheetCsv throws when the key column is missing (e.g. an HTML error page)", () => {
+  assert.throws(
+    () => parseSheetCsv("<!DOCTYPE html><html><body>Error</body></html>", "items", "id"),
+    /missing the "id" column/,
+  );
 });
 
 test("buildMenu ignores images that are not local paths", () => {
@@ -124,5 +172,5 @@ test("buildMenu ignores images that are not local paths", () => {
     }),
   );
   assert.deepEqual(menu[0].items.map((i) => i.image), [undefined, "/img/b.png", undefined]);
-  assert.deepEqual(pickFeatured(menu).map((d) => d.name), ["Local"]);
+  assert.deepEqual(pickFeatured(menu, ["s"]).map((d) => d.name), ["Local"]);
 });

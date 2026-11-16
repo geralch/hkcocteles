@@ -2,7 +2,7 @@
 
 /* Menu colors come from the Google Sheet as class names, which Tailwind can't
    see in the source, so generate the whole range up front. */
-@source inline("bg-{red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose,gray}-100");
+@source inline("bg-{red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose,gray}-{100,200}");
 @source inline("text-{red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose,gray}-600");
 
 /* Colors sampled from the logo. */
@@ -24,8 +24,10 @@
   --font-sans: var(--font-nunito);
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
