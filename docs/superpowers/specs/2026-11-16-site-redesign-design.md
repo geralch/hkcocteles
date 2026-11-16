@@ -103,10 +103,12 @@ this object.
 
 `src/lib/menu.ts` (server-only):
 
-- `getMenu(): Promise<MenuData>` — fetches each sheet tab (`sections`,
+- `getMenu(): Promise<MenuSection[]>` — fetches each sheet tab (`sections`,
   `sizes`, `subsections`, `items`) **once** in parallel (currently `items` is
-  refetched per section), assembles the same `MenuData` shape `/menu` uses
-  today, sorted by `orderIndex`.
+  refetched per section) and returns an ordered array of active sections
+  (each carrying its `key`, used for the `/menu` tab anchors), sorted by
+  `orderIndex`. Shaping logic lives in a pure `src/lib/menu-data.ts` so it can
+  be unit-tested with `node --test`.
 - Fetch uses `next: { revalidate: 60 }` instead of `cache: "no-store"`, so
   sheet edits appear within ~1 minute and pages are served fast.
 - `active` parsed with an explicit helper: `"1"`, `"true"`, `"TRUE"`,
