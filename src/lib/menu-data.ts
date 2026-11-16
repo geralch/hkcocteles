@@ -93,7 +93,8 @@ const toMenuItem = (item: SheetItem): MenuItem => ({
   price: item.price || undefined,
   emoji: item.emoji,
   bgColor: item.bgColor,
-  image: item.image || undefined,
+  // next/image only allows local paths here (no remotePatterns configured).
+  image: item.image?.startsWith("/") ? item.image : undefined,
 });
 
 // Only what should be shown: active sections and items, in sheet order,

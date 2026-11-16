@@ -111,3 +111,17 @@ test("pickFeatured keeps items with images, dedupes by name and respects the lim
   assert.deepEqual(pickFeatured(menu).map((d) => d.name), ["Mora Azul", "Lulo", "Sandía"]);
   assert.deepEqual(pickFeatured(menu, 2).map((d) => d.id), [1, 3]);
 });
+
+test("buildMenu ignores images that are not local paths", () => {
+  const menu = buildMenu(
+    sheet({
+      sections: [section({ key: "s" })],
+      items: [
+        item({ id: "1", name: "Remote", image: "https://example.com/a.png" }),
+        item({ id: "2", name: "Local", image: "/img/b.png" }),
+      ],
+    }),
+  );
+  assert.deepEqual(menu[0].items.map((i) => i.image), [undefined, "/img/b.png"]);
+  assert.deepEqual(pickFeatured(menu).map((d) => d.name), ["Local"]);
+});
