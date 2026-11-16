@@ -119,9 +119,10 @@ test("buildMenu ignores images that are not local paths", () => {
       items: [
         item({ id: "1", name: "Remote", image: "https://example.com/a.png" }),
         item({ id: "2", name: "Local", image: "/img/b.png" }),
+        item({ id: "3", name: "ProtocolRelative", image: "//cdn.example.com/c.png" }),
       ],
     }),
   );
-  assert.deepEqual(menu[0].items.map((i) => i.image), [undefined, "/img/b.png"]);
+  assert.deepEqual(menu[0].items.map((i) => i.image), [undefined, "/img/b.png", undefined]);
   assert.deepEqual(pickFeatured(menu).map((d) => d.name), ["Local"]);
 });
