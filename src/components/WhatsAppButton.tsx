@@ -14,7 +14,7 @@ export default function WhatsAppButton({
       href={whatsappUrl(site.whatsapp, site.whatsappMessage)}
       target="_blank"
       rel="noopener noreferrer"
-      className={`btn bg-whatsapp ${className}`}
+      className={`btn glow-whatsapp ${className}`}
     >
       <SocialIcon name="whatsapp" className="w-5 h-5" />
       {label}

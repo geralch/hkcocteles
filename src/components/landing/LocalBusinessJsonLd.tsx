@@ -18,7 +18,7 @@ export default function LocalBusinessJsonLd() {
       addressRegion: site.address.region,
       addressCountry: site.address.country,
     },
-    openingHours: site.hours.map((hours) => hours.schema),
+    openingHours: site.hours.flatMap((hours) => ("schema" in hours ? [hours.schema] : [])),
     sameAs: Object.values(site.social),
   };
 

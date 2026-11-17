@@ -1,8 +1,8 @@
 // Business info shown across the site. Edit it here; every page reads from it.
-// The hours and the "about" text are drafts: replace them with the real ones.
+// The "about" text is a draft: replace it with your own words.
 export const site = {
   name: "HK Cocteles",
-  url: "https://hkcocteles.com",
+  url: "https://hkcocteles.vercel.app",
   tagline: "Cócteles granizados con y sin licor",
   description:
     "Granizados con y sin licor, sodas y toppings en Prados de Oriente, Cali. Ven por el tuyo o pídelo por WhatsApp.",
@@ -23,11 +23,11 @@ export const site = {
   whatsappMessage: "¡Hola HK! Quiero hacer un pedido 🍹",
   // Menu section keys that featured drinks come from, in menu order.
   featuredSections: ["sinLicor", "conLicor", "especiales"],
-  // `schema` uses schema.org openingHours format for Google.
+  // `schema` uses schema.org openingHours format for Google; leave it out on
+  // closed days.
   hours: [
-    { days: "Lunes a jueves", time: "3:00 pm – 10:00 pm", schema: "Mo-Th 15:00-22:00" },
-    { days: "Viernes y sábado", time: "3:00 pm – 12:00 am", schema: "Fr-Sa 15:00-23:59" },
-    { days: "Domingos y festivos", time: "2:00 pm – 9:00 pm", schema: "Su 14:00-21:00" },
+    { days: "Miércoles a domingo", time: "4:00 pm – 10:00 pm", schema: "We-Su 16:00-22:00" },
+    { days: "Lunes y martes", time: "Cerrado" },
   ],
   social: {
     instagram: "https://instagram.com/hkcocteles",

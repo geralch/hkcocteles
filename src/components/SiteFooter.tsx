@@ -3,11 +3,11 @@ import { SocialLinks } from "./SocialIcons";
 
 export default function SiteFooter() {
   return (
-    <footer className="bg-ink text-cream">
+    <footer className="bg-panel border-t border-hk-cyan/40 shadow-[0_0_24px_-8px_var(--color-hk-cyan)]">
       <div className="max-w-6xl mx-auto px-4 py-10 grid gap-8 md:grid-cols-3">
         <div>
-          <p className="font-display text-2xl font-extrabold text-hk-orange">{site.name}</p>
-          <p className="mt-1 text-cream/80">{site.tagline}</p>
+          <p className="font-display text-2xl font-extrabold text-hk-orange neon-text">{site.name}</p>
+          <p className="mt-1 text-fg/80">{site.tagline}</p>
         </div>
         <div className="space-y-1">
           <p>📍 {fullAddress}</p>
@@ -18,14 +18,14 @@ export default function SiteFooter() {
             </a>
           </p>
           {site.hours.map((hours) => (
-            <p key={hours.days} className="text-sm text-cream/70">
+            <p key={hours.days} className="text-sm text-fg/70">
               {hours.days}: {hours.time}
             </p>
           ))}
         </div>
         <SocialLinks className="md:justify-end" />
       </div>
-      <p className="text-center text-xs text-cream/50 pb-6">
+      <p className="text-center text-xs text-fg/50 pb-6">
         © {new Date().getFullYear()} {site.name}
       </p>
     </footer>
