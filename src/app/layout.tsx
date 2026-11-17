@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Nunito } from "next/font/google";
+import { Baloo_2, Nunito } from "next/font/google";
+import { site } from "@/content/site";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const baloo = Baloo_2({
+  variable: "--font-baloo",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["600", "700", "800"],
 });
 
 const nunito = Nunito({
@@ -18,14 +15,32 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "HK Cocteles - Granizados y Bebidas",
-  description: "Deliciosos granizados y bebidas para todos los gustos. Ubicados en Prados de Oriente, Cali.",
+  metadataBase: new URL(site.url),
+  title: {
+    default: `${site.name} · ${site.tagline}`,
+    template: `%s · ${site.name}`,
+  },
+  description: site.description,
+  openGraph: {
+    type: "website",
+    locale: "es_CO",
+    siteName: site.name,
+    title: `${site.name} · ${site.tagline}`,
+    description: site.description,
+    images: [{ url: "/img/logo.webp", width: 1469, height: 1847, alt: site.name }],
+  },
+  twitter: {
+    card: "summary",
+    title: `${site.name} · ${site.tagline}`,
+    description: site.description,
+    images: ["/img/logo.webp"],
+  },
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/img/ico.png', type: 'image/png' },
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/img/ico.png", type: "image/png" },
     ],
-    apple: '/img/ico.png',
+    apple: "/img/ico.png",
   },
 };
 
@@ -35,10 +50,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} antialiased`}
-      >
+    <html lang="es" data-scroll-behavior="smooth">
+      <body className={`${baloo.variable} ${nunito.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>
